@@ -1,0 +1,34 @@
+{
+	"id": "30136564-8d9c-4df2-a269-e500838ea6c4",
+	"name": "QA",
+	"values": [
+		{
+			"key": "baseURL",
+			"value": "https://fakestoreapi.com",
+			"type": "default",
+			"enabled": true
+		},
+		{
+			"key": "productName",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "productPrice",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		},
+		{
+			"key": "productID",
+			"value": "",
+			"type": "any",
+			"enabled": true
+		}
+	],
+	"color": null,
+	"_postman_variable_scope": "environment",
+	"_postman_exported_at": "2026-05-21T13:28:01.330Z",
+	"_postman_exported_using": "Postman/12.11.3"
+}
