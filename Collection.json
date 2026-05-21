@@ -1,0 +1,672 @@
+{
+  "info": {
+    "_postman_id": "bf434ff8-de8a-4d95-8073-3847ed9ab631",
+    "name": "Product APIs",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "52580299"
+  },
+  "item": [
+    {
+      "name": "Get All Products",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();\r",
+              "\r",
+              "pm.test(\"Validate status code is 200\", ()=>\r",
+              "{\r",
+              "    pm.response.to.have.status(200)\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Validate response is in JSON format\", ()=>\r",
+              "{\r",
+              "    pm.response.to.be.json;//Validating api response to be in json format\r",
+              "})\r",
+              "\r",
+              "//Validating response is an array\r",
+              "pm.test(\"Validate response is an array\", ()=>{\r",
+              "    pm.expect(Array.isArray(jsonData)).to.be.true;\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Validate products count is 20\", ()=>{\r",
+              "    pm.expect(jsonData.length).to.equal(20)//so in order to validate the count we have to use the method length\r",
+              "})\r",
+              "\r",
+              "\r",
+              "//Validate count of products should be more than 0\r",
+              "pm.test(\"Validate count of products should be greater than 0\", ()=>{\r",
+              "    pm.expect(jsonData.length).to.be.greaterThan(0)\r",
+              "})\r",
+              "\r",
+              "\r",
+              "pm.test(\"Validate each product has mandatory properties\", ()=>{\r",
+              "    jsonData.forEach((product) => {\r",
+              "        pm.expect(product).to.have.property('id');\r",
+              "        pm.expect(product).to.have.property('title');\r",
+              "        pm.expect(product).to.have.property('price');\r",
+              "        pm.expect(product).to.have.property('description'); \r",
+              "        pm.expect(product).to.have.property('category');\r",
+              "        pm.expect(product).to.have.property('image');\r",
+              "        pm.expect(product.rating).to.have.property('rate');\r",
+              "        pm.expect(product.rating).to.have.property('count');\r",
+              "    })\r",
+              "})\r",
+              "\r",
+              "\r",
+              "pm.test(\"Validate data type of each property of a product\", () => {\r",
+              "    jsonData.forEach((product) => {\r",
+              "        pm.expect(product.id).to.be.a('number');\r",
+              "        pm.expect(product.title).to.be.a('string');\r",
+              "        pm.expect(product.price).to.be.a('number');\r",
+              "        pm.expect(product.description).to.be.a('string');\r",
+              "        pm.expect(product.category).to.be.a('string');\r",
+              "        pm.expect(product.image).to.be.a('string');\r",
+              "        pm.expect(product.rating).to.be.an('object');\r",
+              "        pm.expect(product.rating.rate).to.be.a('number');\r",
+              "        pm.expect(product.rating.count).to.be.a('number');\r",
+              "    })\r",
+              "})\r",
+              "\r",
+              "\r",
+              "//To validate image is an url we will use regex\r",
+              "pm.test(\"Validate image is an url\", ()=>{\r",
+              "jsonData.forEach((product) => {\r",
+              "    pm.expect(product.image).to.match(/^https?:\\/\\//);\r",
+              "})\r",
+              "})\r",
+              "\r",
+              "\r",
+              "pm.test(\"Validate price of product should be greater than zero\", () => {\r",
+              "    jsonData.forEach((product) => {\r",
+              "        pm.expect(product.price).to.be.greaterThan(0);\r",
+              "    })\r",
+              "})\r",
+              "\r",
+              "\r",
+              "pm.test(\"Validate price of product is within the range\", () => {\r",
+              "    jsonData.forEach((product) => {\r",
+              "        pm.expect(product.price).to.be.within(0, 1000);\r",
+              "    })\r",
+              "})\r",
+              "\r",
+              "\r",
+              "pm.test(\"Validate category should not empty\", () => {\r",
+              "    jsonData.forEach((product) => {\r",
+              "        pm.expect(product.category).to.not.be.empty;\r",
+              "    })\r",
+              "})\r",
+              "\r",
+              "\r",
+              "pm.test(\"Validate category belongs to allowed list\", () => {\r",
+              "    var allowedCategories = [\"men's clothing\", \"women's clothing\", \"jewelery\", \"electronics\"];\r",
+              "    jsonData.forEach((product) => {\r",
+              "        pm.expect(product.category).to.be.oneOf(allowedCategories);\r",
+              "    })\r",
+              "})\r",
+              "\r",
+              "\r",
+              "\r",
+              "pm.test(\"Validate rating of each product\", () => {\r",
+              "    jsonData.forEach((product) => {\r",
+              "        pm.expect(product.rating).to.be.an('object');\r",
+              "        pm.expect(product.rating).to.have.property('rate')\r",
+              "        pm.expect(product.rating.rate).to.be.a('number')\r",
+              "        pm.expect(product.rating).to.have.property('count');\r",
+              "        pm.expect(product.rating.count).to.be.a('number');\r",
+              "    })\r",
+              "})"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "packages": {},
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/products",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "products"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Create a Product",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "console.log(pm.environment.get(\"productName\"))\r",
+              "console.log(pm.environment.get(\"productPrice\"))\r",
+              "//First and most basic validation test\r",
+              "pm.test(\"Validate status code to be 201\", () => {\r",
+              "    pm.response.to.have.status(201);\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Validate response body is not empty\", () => {\r",
+              "    pm.expect(pm.response.json()).to.not.be.empty;\r",
+              "})\r",
+              "\r",
+              "//Most important validation in POST request\r",
+              "let requestData = pm.request.body.raw;\r",
+              "let requestJSON = JSON.parse(requestData);\r",
+              "console.log(requestJSON)\r",
+              "\r",
+              "let responseJSON = pm.response.json();\r",
+              "console.log(responseJSON)\r",
+              "\r",
+              "pm.test(\"Validate request data matches response data\", () => {\r",
+              "    pm.expect(responseJSON.title).to.be.equal(requestJSON.title);\r",
+              "    pm.expect(responseJSON.price).to.eql(requestJSON.price);\r",
+              "    pm.expect(responseJSON.description).to.equal(requestJSON.description);\r",
+              "    pm.expect(responseJSON.category).to.equal(requestJSON.category);\r",
+              "})\r",
+              "\r",
+              "\r",
+              "//creating an environment variable productId to use it in the next request like PUT and DELETE\r",
+              "//requests\r",
+              "pm.environment.set(\"productID\", responseJSON.id);\r",
+              "console.log(pm.environment.get(\"productID\"))"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "let randomId = Math.floor(Math.random() * 100000);\r",
+              "let productName = \"Test Product \" + randomId;\r",
+              "console.log(productName)\r",
+              "let productPrice = Math.floor(Math.random() * 10000) + 100;\r",
+              "console.log(productPrice)\r",
+              "\r",
+              "pm.environment.set(\"productName\", productName);\r",
+              "pm.environment.set(\"productPrice\", productPrice);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n  \"title\": \"{{productName}}\",\r\n  \"price\": \"{{productPrice}}\",\r\n  \"description\": \"Classic\",\r\n  \"category\": \"Premium\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/products",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "products"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get a Single Product",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();\r",
+              "\r",
+              "pm.test(\"Validate status code to be 200\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Validate response is in JSON format\", () => {\r",
+              "    pm.response.to.be.json;\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Validate response is an object\", () => {\r",
+              "    pm.expect(jsonData).to.be.an('object');\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Validate the product id is correct\", () => {\r",
+              "    pm.expect(jsonData.id).to.equal(1);\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Validate the properties of the product\", () => {\r",
+              "    pm.expect(jsonData).to.have.property('id');\r",
+              "    pm.expect(jsonData).to.have.property('title');\r",
+              "    pm.expect(jsonData).to.have.property('price');\r",
+              "    pm.expect(jsonData).to.have.property('description');\r",
+              "    pm.expect(jsonData).to.have.property('category');\r",
+              "    pm.expect(jsonData).to.have.property('image');\r",
+              "    pm.expect(jsonData).to.have.property('rating');\r",
+              "    pm.expect(jsonData.rating).to.have.property('rate');\r",
+              "    pm.expect(jsonData.rating).to.have.property('count');   \r",
+              "})\r",
+              "\r",
+              "pm.test(\"Validate data type of each property of a product\", () => {\r",
+              "    pm.expect(jsonData.id).to.be.a('number');\r",
+              "    pm.expect(jsonData.title).to.be.a('string');\r",
+              "    pm.expect(jsonData.price).to.be.a('number');\r",
+              "    pm.expect(jsonData.description).to.be.a('string');\r",
+              "    pm.expect(jsonData.category).to.be.a('string');\r",
+              "    pm.expect(jsonData.image).to.be.a('string');\r",
+              "    pm.expect(jsonData.rating).to.be.an('object');\r",
+              "})\r",
+              "\r",
+              "\r",
+              "\r",
+              "const requestId = Number(pm.request.url.toString().split('/').pop());\r",
+              "console.log(requestId)\r",
+              "\r",
+              "var actualId = pm.response.json().id;\r",
+              "console.log(actualId)\r",
+              "\r",
+              "pm.test(\"Validate status code to be 200\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "})\r",
+              "\r",
+              "if(actualId === requestId){//This if block will run for the correct product id\r",
+              "    pm.test(\"Validate product id is correct\", () => {\r",
+              "        pm.expect(actualId).to.equal(requestId)\r",
+              "    })\r",
+              "}\r",
+              "else{//This else block will run if the product id is not correct\r",
+              "    pm.test(\"Validate invalid product id\", () => {\r",
+              "        pm.expect(actualId).to.not.equal(requestId)\r",
+              "    })\r",
+              "}\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/products/{{productID}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "products",
+            "{{productID}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get a Single Product - Invalid productID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "\r",
+              "\r",
+              "const requestId = Number(pm.request.url.toString().split('/').pop());\r",
+              "console.log(requestId)\r",
+              "\r",
+              "var actualId = pm.response.text();//converting api response into text format as the server is not returning any json response\r",
+              "//It is returning empty data.\r",
+              "console.log(actualId)//Empty string\r",
+              "pm.test(\"Validate status code to be 200\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "})\r",
+              "\r",
+              "if(actualId === requestId){//This if block will run for the correct product id\r",
+              "    pm.test(\"Validate product id is correct\", () => {\r",
+              "        pm.expect(actualId).to.equal(requestId)\r",
+              "    })\r",
+              "}\r",
+              "else{//This else block will run if the product id is not correct\r",
+              "    pm.test(\"Validate invalid product id\", () => {\r",
+              "        pm.expect(actualId).to.not.equal(requestId)\r",
+              "    })\r",
+              "}\r",
+              "\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/products/100",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "products",
+            "100"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get a Single Product - Valid productID",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "\r",
+              "\r",
+              "const requestId = Number(pm.request.url.toString().split(\"/\").pop());\r",
+              "console.log(requestId)\r",
+              "\r",
+              "var actualId = pm.response.json().id;\r",
+              "console.log(actualId)\r",
+              "\r",
+              "if(actualId === requestId){//This if block will run for the correct product id\r",
+              "    pm.test(\"Validate product id is correct\", () => {\r",
+              "        pm.expect(actualId).to.equal(requestId)\r",
+              "    })\r",
+              "}\r",
+              "else{//This else block will run if the product id is not correct\r",
+              "    pm.test(\"Validate invalid product id\", () => {\r",
+              "        pm.expect(actualId).to.not.equal(requestId)\r",
+              "    })\r",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/products/10",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "products",
+            "10"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Product - PUT",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test(\"Validate status code to be 200\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Validate response is in json format\", () => {\r",
+              "    pm.response.to.be.json;\r",
+              "})\r",
+              "\r",
+              "let responseJSON = pm.response.json();\r",
+              "\r",
+              "pm.test(\"Validate product id matches environment variable\", () => {\r",
+              "    pm.expect(responseJSON.id).to.be.equal(pm.environment.get(\"productID\"));\r",
+              "})"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"title\": \"Test Title Product 100\",\r\n    \"price\": 199,\r\n    \"description\": \"Test Classic\",\r\n    \"category\": \"Test Premium\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/products/{{productID}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "products",
+            "{{productID}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get a Single Product Copy",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();\r",
+              "\r",
+              "pm.test(\"Validate status code to be 200\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Validate response is in JSON format\", () => {\r",
+              "    pm.response.to.be.json;\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Validate response is an object\", () => {\r",
+              "    pm.expect(jsonData).to.be.an('object');\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Validate the product id is correct\", () => {\r",
+              "    pm.expect(jsonData.id).to.equal(1);\r",
+              "})\r",
+              "\r",
+              "pm.test(\"Validate the properties of the product\", () => {\r",
+              "    pm.expect(jsonData).to.have.property('id');\r",
+              "    pm.expect(jsonData).to.have.property('title');\r",
+              "    pm.expect(jsonData).to.have.property('price');\r",
+              "    pm.expect(jsonData).to.have.property('description');\r",
+              "    pm.expect(jsonData).to.have.property('category');\r",
+              "    pm.expect(jsonData).to.have.property('image');\r",
+              "    pm.expect(jsonData).to.have.property('rating');\r",
+              "    pm.expect(jsonData.rating).to.have.property('rate');\r",
+              "    pm.expect(jsonData.rating).to.have.property('count');   \r",
+              "})\r",
+              "\r",
+              "pm.test(\"Validate data type of each property of a product\", () => {\r",
+              "    pm.expect(jsonData.id).to.be.a('number');\r",
+              "    pm.expect(jsonData.title).to.be.a('string');\r",
+              "    pm.expect(jsonData.price).to.be.a('number');\r",
+              "    pm.expect(jsonData.description).to.be.a('string');\r",
+              "    pm.expect(jsonData.category).to.be.a('string');\r",
+              "    pm.expect(jsonData.image).to.be.a('string');\r",
+              "    pm.expect(jsonData.rating).to.be.an('object');\r",
+              "})\r",
+              "\r",
+              "\r",
+              "\r",
+              "const requestId = Number(pm.request.url.toString().split('/').pop());\r",
+              "console.log(requestId)\r",
+              "\r",
+              "var actualId = pm.response.json().id;\r",
+              "console.log(actualId)\r",
+              "\r",
+              "pm.test(\"Validate status code to be 200\", () => {\r",
+              "    pm.response.to.have.status(200);\r",
+              "})\r",
+              "\r",
+              "if(actualId === requestId){//This if block will run for the correct product id\r",
+              "    pm.test(\"Validate product id is correct\", () => {\r",
+              "        pm.expect(actualId).to.equal(requestId)\r",
+              "    })\r",
+              "}\r",
+              "else{//This else block will run if the product id is not correct\r",
+              "    pm.test(\"Validate invalid product id\", () => {\r",
+              "        pm.expect(actualId).to.not.equal(requestId)\r",
+              "    })\r",
+              "}\r",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseURL}}/products/{{productID}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "products",
+            "{{productID}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Partial Update - Patch",
+      "request": {
+        "method": "PATCH",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\r\n    \"price\": \"999\"\r\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/products/{{productID}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "products",
+            "{{productID}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete the Product",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/products/{{productID}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "products",
+            "{{productID}}"
+          ]
+        }
+      },
+      "response": []
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "type": "text/javascript",
+        "packages": {},
+        "requests": {},
+        "exec": [
+          ""
+        ]
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "productId",
+      "value": ""
+    }
+  ]
+}
